@@ -22,7 +22,10 @@ fn run_app() -> w::AnyResult<i32> {
     let mut icc = w::INITCOMMONCONTROLSEX::default();
     icc.icc = w::co::ICC::STANDARD_CLASSES;
     
-    InitCommonControlsEx(&icc).unwrap();
+    let iccres = InitCommonControlsEx(&icc);
+    if let Err(e) = iccres {
+        panic!("Got error: {}", e.FormatMessage());
+    }
     
     Window::new()
         .run()

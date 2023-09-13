@@ -59,6 +59,29 @@ impl Window {
             
             Ok(())
         });
+
+        let self2 = self.clone();
+        self.wnd.on().wm_init_dialog(move |_| {
+            
+            self2.wnd.hwnd().SetWindowLongPtr(co::GWLP::EXSTYLE, 0x0008_0000);
+            
+            self2.wnd.hwnd().SetLayeredWindowAttributes(
+                winsafe::COLORREF::new(0, 255, 0),
+                100,
+                co::LWA::COLORKEY
+            )?;
+            
+            self2.wnd.hwnd().SetWindowPos(
+                winsafe::HwndPlace::Place(co::HWND_PLACE::TOPMOST),
+                winsafe::POINT::default(),
+                winsafe::SIZE::default(),
+                co::SWP::NOREPOSITION | co::SWP::NOSIZE
+            )?;
+
+
+            Ok(true)
+        });
+        
         
         let self2 = self.clone();
         self.wnd.on().wm_moving(move |_| {

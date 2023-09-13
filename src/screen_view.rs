@@ -77,20 +77,26 @@ impl ScreenView {
             let pen = winsafe::HPEN::CreatePen(
                 co::PS::SOLID, 1, winsafe::COLORREF::new(0, 0, 0)
             )?;
+
+            let rect = self2.cap_rect.borrow();
             
+            let brush = winsafe::HBRUSH::CreateSolidBrush(winsafe::COLORREF::new(0, 255, 0))?;
+            
+            //let _old_brush = hdc.SelectObject(&*brush);
+            
+            let fill_rect = winsafe::RECT {
+                left: 0,
+                top: 0,
+                right: rect.right - rect.left,
+                bottom: rect.bottom - rect.top,
+            };
+            
+            hdc.FillRect(fill_rect, &brush)?;
+
             let _old_pen = hdc.SelectObject(&*pen);
 
             hdc.MoveToEx(0, 0, None)?;
-            
-            let rect = self2.cap_rect.borrow();
 
-            println!("Control Size: left: {}, top: {}, right: {}, bottom: {}",
-                rect.left,
-                rect.top,
-                rect.right,
-                rect.bottom,
-            );
-            
             hdc.LineTo(rect.right-rect.left-1, 0)?;
             hdc.LineTo(rect.right-rect.left-1, rect.bottom-rect.top-1)?;
             hdc.LineTo(0, rect.bottom-rect.top-1)?;
@@ -101,8 +107,8 @@ impl ScreenView {
         
         /*
          * WM_CREATE
-         */
 
+        ku
         let self2 = self.clone();
         self.wnd.on().wm_create(move |c| {
             self2.wnd.hwnd().SetTimer(1, 30, None).unwrap();
@@ -133,5 +139,6 @@ impl ScreenView {
             Ok(())
 
         });
+         */
     }
 }
